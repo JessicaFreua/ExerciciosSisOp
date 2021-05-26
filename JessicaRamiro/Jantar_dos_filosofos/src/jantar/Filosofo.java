@@ -5,7 +5,7 @@ public class Filosofo extends Thread {
 	int idSituacao;
 	String nome;
 
-    //situações
+    //situaï¿½ï¿½es
     final int PENSANDO = 0;
     final int FOME = 1;
     final int COMENDO = 2;
@@ -24,12 +24,12 @@ public class Filosofo extends Thread {
 
 	public void Fome(){
         App.situacao[this.idSituacao] = 1;
-        System.out.println("O Filósofo " + getNome() + " está com fome.");
+        System.out.println("O Filï¿½sofo " + getNome() + " estï¿½ com fome.");
     }
 
     public void Comendo(){
         App.situacao[this.idSituacao] = 2;
-        System.out.println("O Filósofo " + getNome() + " está comendo.");
+        System.out.println("O Filï¿½sofo " + getNome() + " estï¿½ comendo.");
         try {
             Thread.sleep(1000L);
         } catch (InterruptedException ex) {
@@ -39,7 +39,7 @@ public class Filosofo extends Thread {
 
     public void Pensando(){
         App.situacao[this.idSituacao] = 0;
-        System.out.println("O Filósofo " + getNome() + " está pensando.");
+        System.out.println("O Filï¿½sofo " + getNome() + " estï¿½ pensando.");
         try {
             Thread.sleep(1000L);
         } catch (InterruptedException ex) {
@@ -52,27 +52,27 @@ public class Filosofo extends Thread {
         App.mutex.acquire();
         Pensando();
 
-        //Quando o filósofo larga os garfos, os outros filósofos, tanto o da direita, quanto o da esquerda, tem a possibilidade de pegarem os garfos.
+        //Quando o filï¿½sofo larga os garfos, os outros filï¿½sofos, tanto o da direita, quanto o da esquerda, tem a possibilidade de pegarem os garfos.
         App.filosofos[FilosofoEsquerda()].TentarPegarGarfos();
         App.filosofos[FilosofoDireita()].TentarPegarGarfos();
         App.mutex.release();
     }
 
-    public void PegarOGarfo() throws InterruptedException {
+    public synchronized void PegarOGarfo() throws InterruptedException {
         App.mutex.acquire();
         Fome();
 
-        //Se semaforo(1), então o filósofo consegue pegar o garfo
+        //Se semaforo(1), entï¿½o o filï¿½sofo consegue pegar o garfo
         TentarPegarGarfos();
         App.mutex.release();
 
-        //Caso a condição seja falsa, então o filósofo não conseguirá pegar o garfo e terá que aguardar até chegar a sua vez novamente
+        //Caso a condiï¿½ï¿½o seja falsa, entï¿½o o filï¿½sofo nï¿½o conseguirï¿½ pegar o garfo e terï¿½ que aguardar atï¿½ chegar a sua vez novamente
         App.semaforos[this.idSituacao].acquire();
     }
 
-    public void TentarPegarGarfos() {
+    public synchronized void TentarPegarGarfos() {
         
-        //caso o filósofo atual estiver com fome, e seus vizinhos não estiverem comendo, então é chamado o método comendo para o filósofo atual.
+        //caso o filï¿½sofo atual estiver com fome, e seus vizinhos nï¿½o estiverem comendo, entï¿½o ï¿½ chamado o mï¿½todo comendo para o filï¿½sofo atual.
         if(App.situacao[this.idSituacao] == 1 
            && App.situacao[FilosofoEsquerda()] !=2 
            && App.situacao[FilosofoDireita()] !=2){
@@ -81,7 +81,7 @@ public class Filosofo extends Thread {
             
             App.semaforos[this.idSituacao].release();
         } else {
-            System.out.println(getNome() + " não conseguiu comer desta vez!");
+            System.out.println(getNome() + " nï¿½o conseguiu comer desta vez!");
         }
     }
 
@@ -106,7 +106,7 @@ public class Filosofo extends Thread {
     }
 
     public int FilosofoEsquerda() {
-        //A esquerda do filósofo 0, estará o filósofo 4
+        //A esquerda do filï¿½sofo 0, estarï¿½ o filï¿½sofo 4
         if(this.idSituacao == 0) {
             return 4;
         } else {

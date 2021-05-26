@@ -8,28 +8,28 @@ public class App {
 	
 	static Semaphore mutex = new Semaphore(0);
 
-    static Semaphore[] semaforos = new Semaphore[5]; // Criando um semáforo para cada filósofo.
+    static Semaphore[] semaforos = new Semaphore[5]; // Criando um semï¿½foro para cada filï¿½sofo.
 
-    static Filosofo[] filosofos = new Filosofo[5]; // Criando os filósofos.
+    static Filosofo[] filosofos = new Filosofo[5]; // Criando os filï¿½sofos.
     static int[] situacao = new int[5];
 
 	public static void main(String[] args) {
 		
-		//A situação inicial de todos os filósofos é PENSANDO
+		//A situaï¿½ï¿½o inicial de todos os filï¿½sofos ï¿½ PENSANDO
         for(int i = 0; i < situacao.length; i++){
             situacao[i] = 0;
         }
 
-        //Inicializando os filósofos
-        filosofos[0] = new Filosofo("Platão", 0);
-        filosofos[1] = new Filosofo("Aristóteles", 1);
-        filosofos[2] = new Filosofo("Sócrates", 2);
+        //Inicializando os filï¿½sofos
+        filosofos[0] = new Filosofo("Platï¿½o", 0);
+        filosofos[1] = new Filosofo("Aristï¿½teles", 1);
+        filosofos[2] = new Filosofo("Sï¿½crates", 2);
         filosofos[3] = new Filosofo("Immanuel", 3);
-        filosofos[4] = new Filosofo("René", 4);       
+        filosofos[4] = new Filosofo("Renï¿½", 4);       
     
-        //Descobrir quais garfos pertence a quais filósofos
+        //Descobrir quais garfos pertence a quais filï¿½sofos
         for(int i = 0; i<filosofos.length; i++){
-            System.out.println("O garfo " + i + " está com o fisósofo " + i + " e também o garfo " + (i + 1) % 5);
+            System.out.println("O garfo " + i + " estï¿½ com o fisï¿½sofo " + i + " e tambï¿½m o garfo " + (i + 1) % 5);
 
         } 
 
@@ -43,12 +43,12 @@ public class App {
             filosofos[i].start();
         }
 
-        try {
+        /*try {
             Thread.sleep(10000);
             System.exit(0);
         } catch (InterruptedException ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
 
 	}
 
