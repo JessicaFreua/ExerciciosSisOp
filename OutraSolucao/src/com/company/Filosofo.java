@@ -2,13 +2,18 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 import static java.lang.Thread.*;
 
-public class Filosofo {
+public class Filosofo extends Thread{
     //region Attributes
-    Random gerador = new Random();
     public int idFilosofo;
+    private Mesa mesa;
+    private final Random gerador = new Random();
+    int contador=0;
     //endregion
 
     //region Constructor
@@ -20,33 +25,55 @@ public class Filosofo {
     //endregion
 
     //region Methods
-    public void exist(Mesa mesa) throws InterruptedException {
-        think(mesa);
-        eat(mesa);
+
+
+    @Override
+    public void run() {
+        try{
+            exist();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
+
+    public void exist() throws InterruptedException {
+        while(true) {
+            output_garfos();
+            think(mesa);
+            eat(mesa);
+        }
+    }
+
+    private void output_garfos() {
+        for (int i = 0; i < mesa.garfos.size(); i++){
+            System.out.print(" garfo"+ i +  "= " + mesa.garfos.get(i));
+        }
+        System.out.println();
     }
 
     private void think(Mesa mesa) throws InterruptedException {
         System.out.println("O Filosofo "+idFilosofo+ " esta pensando...");
-        sleep(gerador.nextInt()%5000);
+        sleep(gerador.nextInt(5000));
     }
 
-    private void eat(Mesa mesa) throws InterruptedException {
-        int garfoEsquerdo = idFilosofo;
-        int garfoDireito = idFilosofo+1;
 
+    private void eat(Mesa mesa) throws InterruptedException {
         System.out.println("Filosofo " + idFilosofo + " esta procurando garfos >:/");
+
         synchronized (this){
-            holdsLock(mesa.garfos.get(garfoEsquerdo));
-            holdsLock(mesa.garfos.get(garfoDireito));
+            mesa.pegarGarfos(idFilosofo);
         }
 
         System.out.println("Filosofo " + idFilosofo + " esta comendo :P");
-        sleep(gerador.nextInt()%10000);
+        sleep(gerador.nextInt(10000));
+        mesa.retornaGarfos(idFilosofo);
         System.out.println("Filosofo " + idFilosofo + " largou seus garfos.");
+        contador++;
+
     }
 
-    public void getBoolean(Boolean bool){
-
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
     }
 
     //endregion
