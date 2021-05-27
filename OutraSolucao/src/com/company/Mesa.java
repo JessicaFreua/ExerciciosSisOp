@@ -9,7 +9,6 @@ public class Mesa {
     public ArrayList<Boolean> garfos = new ArrayList<>();
     public ArrayList<Filosofo> filosofos = new ArrayList<>();
     public ArrayList<Semaphore> semaphores = new ArrayList<>();
-
     //endregion
 
     //region Constructor

@@ -53,7 +53,7 @@ public class Filosofo extends Thread{
 
     private void think(Mesa mesa) throws InterruptedException {
         System.out.println("O Filosofo "+idFilosofo+ " esta pensando...");
-        sleep(gerador.nextInt(5000));
+        sleep(gerador.nextInt(5));
     }
 
 
@@ -65,7 +65,7 @@ public class Filosofo extends Thread{
         }
 
         System.out.println("Filosofo " + idFilosofo + " esta comendo :P");
-        sleep(gerador.nextInt(10000));
+        sleep(gerador.nextInt(10));
         mesa.retornaGarfos(idFilosofo);
         System.out.println("Filosofo " + idFilosofo + " largou seus garfos.");
         contador++;
