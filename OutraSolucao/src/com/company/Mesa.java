@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 public class Mesa {
     //region Attributes
     private final static int NUMERO_GARFOS = 5;
+    public double tempoDeJanta = 0;
     public ArrayList<Boolean> garfos = new ArrayList<>();
     public ArrayList<Filosofo> filosofos = new ArrayList<>();
     public ArrayList<Semaphore> semaphores = new ArrayList<>();
@@ -31,6 +32,7 @@ public class Mesa {
         while (!this.garfos.get(garfoEsquerdo) || !this.garfos.get(garfoDireito)) {
             try {
                 wait();
+                filosofos.get(idFilosofo).tentouPegar++;
             } catch (InterruptedException e) {
             }
         }
@@ -43,9 +45,7 @@ public class Mesa {
         int garfoEsquerdo = getGarfoEsquerdo(idFilosofo);
         int garfoDireito = getGarfoDireito(idFilosofo);
         garfos.set(garfoEsquerdo,true);
-        System.out.println(idFilosofo + " = Garfo esquerdo " + garfoEsquerdo  + " foi liberado --E");
         garfos.set(garfoDireito,true);
-        System.out.println(idFilosofo + " = Garfo direito " + garfoDireito  + " foi liberado --E");
         this.notifyAll();
     }
 
@@ -62,6 +62,16 @@ public class Mesa {
            return 0;
         }
         return idFilosofo;
+    }
+
+    public boolean fimDaJanta() {
+        int cont=0;
+        for (Filosofo f : filosofos) {
+            if (f.satisfeito){
+                cont++;
+            }
+        }
+        return cont < filosofos.size();
     }
 
     //endregion

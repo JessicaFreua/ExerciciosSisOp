@@ -1,12 +1,9 @@
 package com.company;
 
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
-import static java.lang.Thread.*;
+import static com.company.SortAuxClass.getClockSec;
 
 public class Filosofo extends Thread{
     //region Attributes
@@ -14,6 +11,8 @@ public class Filosofo extends Thread{
     private Mesa mesa;
     private final Random gerador = new Random();
     int contador=0;
+    int tentouPegar=0;
+    boolean satisfeito = false;
     //endregion
 
     //region Constructor
@@ -37,27 +36,22 @@ public class Filosofo extends Thread{
     }
 
     public void exist() throws InterruptedException {
-        while(true) {
-            output_garfos();
-            think(mesa);
-            eat(mesa);
+        while(mesa.tempoDeJanta > getClockSec()) {
+            think();
+            eat();
         }
+        satisfeito=true;
+        System.out.println("# Filosofo " + idFilosofo + " ja esta satisfeito");
     }
 
-    private void output_garfos() {
-        for (int i = 0; i < mesa.garfos.size(); i++){
-            System.out.print(" garfo"+ i +  "= " + mesa.garfos.get(i));
-        }
-        System.out.println();
-    }
 
-    private void think(Mesa mesa) throws InterruptedException {
+    private void think() throws InterruptedException {
         System.out.println("O Filosofo "+idFilosofo+ " esta pensando...");
-        sleep(gerador.nextInt(5));
+        sleep(gerador.nextInt(1000));
     }
 
 
-    private void eat(Mesa mesa) throws InterruptedException {
+    private void eat() throws InterruptedException {
         System.out.println("Filosofo " + idFilosofo + " esta procurando garfos >:/");
 
         synchronized (this){
@@ -65,11 +59,10 @@ public class Filosofo extends Thread{
         }
 
         System.out.println("Filosofo " + idFilosofo + " esta comendo :P");
-        sleep(gerador.nextInt(10));
+        sleep(gerador.nextInt(3000));
         mesa.retornaGarfos(idFilosofo);
         System.out.println("Filosofo " + idFilosofo + " largou seus garfos.");
         contador++;
-
     }
 
     public void setMesa(Mesa mesa) {
