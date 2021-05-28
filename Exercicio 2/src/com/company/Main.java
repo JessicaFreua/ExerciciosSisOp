@@ -13,7 +13,6 @@ public class Main {
         int n = teclado.nextInt();
         Matriz matriz = new Matriz(n);
         matriz.matrizToString(matriz.matriz);
-
         matriz.run();
 
 
