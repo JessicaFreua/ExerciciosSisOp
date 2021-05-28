@@ -1,0 +1,13 @@
+package jantar;
+
+public class Semaforo {
+	
+	protected int contador;
+	
+	public Semaforo () {
+		this.contador = 0;
+	}
+	
+	
+
+}

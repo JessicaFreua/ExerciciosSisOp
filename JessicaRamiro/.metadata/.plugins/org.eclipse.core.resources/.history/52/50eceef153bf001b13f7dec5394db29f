@@ -1,0 +1,6 @@
+package jantar;
+
+public class Filosofo extends Thread {
+	
+	
+}

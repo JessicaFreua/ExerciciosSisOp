@@ -1,0 +1,18 @@
+package jantar;
+
+public class App  {
+	
+	public App() {
+		add(new Mesa());
+	}
+	
+	private void add(Mesa mesa) {
+				
+	}
+
+	public static void main (String[] args){
+      
+		new App();
+   }
+
+}

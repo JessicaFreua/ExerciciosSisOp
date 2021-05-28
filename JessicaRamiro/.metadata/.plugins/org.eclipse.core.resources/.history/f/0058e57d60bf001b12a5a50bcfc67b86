@@ -1,0 +1,109 @@
+package jantar;
+
+import javax.swing.JPanel;
+import java.awt.*;
+
+
+public class Grade extends JPanel implements Runnable
+{
+
+    final int PENSANDO = 0;
+    final int COMFOME  = 1;
+    final int COMENDO  = 2;
+
+    String mensagem = "";
+
+    Thread thread;
+
+   
+    public static Semaforo mutex = new Semaforo(1);
+
+    
+    public static Semaforo semaforos[] = new Semaforo[5];
+
+    
+    public static int situacao[] = new int[5];
+
+    
+    static Filosofo filosofo[] = new Filosofo[5];
+
+    
+    public Grade ()
+    {
+        init();
+    }
+
+    public void init ()
+    {
+        for (int i = 0; i < situacao.length; i++)
+        {
+            situacao[i] = 0;
+        }
+
+        if(thread == null)
+        {
+            thread = new Thread(this);
+            thread.start();
+        }
+
+        Thread.currentThread().setPriority(1);
+
+        filosofo[0] = new Filosofo("Platao", 0);
+        filosofo[1] = new Filosofo("Socrates", 1);
+        filosofo[2] = new Filosofo("Aristoteles", 2);
+        filosofo[3] = new Filosofo("Tales", 3);
+        filosofo[4] = new Filosofo("Sofocles", 4);
+
+        semaforos[0] = new Semaforo(0);
+        semaforos[1] = new Semaforo(0);
+        semaforos[2] = new Semaforo(0);
+        semaforos[3] = new Semaforo(0);
+        semaforos[4] = new Semaforo(0);
+
+        filosofo[0].start();
+        filosofo[1].start();
+        filosofo[2].start();
+        filosofo[3].start();
+        filosofo[4].start();
+    }
+
+    @Override
+    public void Paint(Graphics g)
+    {
+        for(int i = 0; i < 5; i++)
+        {            
+            if(situacao[i] == 0)
+            {
+               mensagem = "PENSANDO";
+            }
+            if(situacao[i] == 1)
+            {
+                mensagem = "COMFOME";
+            }
+            if(situacao[i] == 2)
+            {
+                mensagem = "COMENDO";
+            }
+            
+           
+        }
+
+    }
+
+    public void run ()
+    {        
+        do
+        {
+            try
+            {
+                Thread.sleep(1000L);
+            }
+            catch (InterruptedException ex)
+            {
+                System.out.println("ERROR>" + ex.getMessage());
+            }
+        }
+        while (true);
+    }
+
+}
