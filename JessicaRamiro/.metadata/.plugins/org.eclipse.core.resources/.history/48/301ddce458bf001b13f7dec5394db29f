@@ -1,0 +1,10 @@
+package jantar;
+
+import javax.swing.JPanel;
+import java.awt.*;
+
+public class Mesa extends JPanel implements Runnable {
+	
+	
+
+}

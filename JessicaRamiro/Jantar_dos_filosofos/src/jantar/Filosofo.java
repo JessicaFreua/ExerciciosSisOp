@@ -1,116 +1,166 @@
 package jantar;
 
-public class Filosofo extends Thread {
-	
-	int idSituacao;
-	String nome;
+public class Filosofo extends Thread
+{
 
-    //situa��es
+    private int ID;
+
     final int PENSANDO = 0;
-    final int FOME = 1;
-    final int COMENDO = 2;
+    final int COMFOME  = 1;
+    final int COMENDO  = 2;
 
-    public Filosofo(String nome, int idSituacao) {
-        this.nome = nome;
-        this.idSituacao = idSituacao;
-    }
-    
-    
-    public String getNome() {
-		return nome;
-	}
-
-
-
-	public void Fome(){
-        App.situacao[this.idSituacao] = 1;
-        System.out.println("O Fil�sofo " + getNome() + " est� com fome.");
+    public Filosofo (String nome, int ID)
+    {
+        super(nome);
+        this.ID = ID;
     }
 
-    public void Comendo(){
-        App.situacao[this.idSituacao] = 2;
-        System.out.println("O Fil�sofo " + getNome() + " est� comendo.");
-        try {
+   public void ComFome ()
+    {
+       
+        Mesa.situacao[this.ID] = 1;
+      
+        System.out.println("O Filosofo " + getName() + " esta com fome!");
+    }
+
+    public void Comendo ()
+    {
+        
+        Mesa.situacao[this.ID] = 2;
+        
+        System.out.println("O Filosofo " + getName() + " esta comendo!");
+
+        
+        try
+        {
+            
             Thread.sleep(1000L);
-        } catch (InterruptedException ex) {
-            System.out.println("ERRO" + ex.getMessage());
+        }
+        catch (InterruptedException ex)
+        {
+           
+            System.out.println("ERROR>" + ex.getMessage());
         }
     }
 
-    public void Pensando(){
-        App.situacao[this.idSituacao] = 0;
-        System.out.println("O Fil�sofo " + getNome() + " est� pensando.");
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException ex) {
-            System.out.println("ERRO" + ex.getMessage());
+    
+    public void Pensando ()
+    {
+        
+        Mesa.situacao[this.ID] = 0;
+      
+        System.out.println("O Filosofo " + getName() + " esta pensando!");
 
+      
+        try
+        {
+            
+            Thread.sleep(1000L);
+        }
+        catch (InterruptedException ex)
+        {
+            
+            System.out.println("ERROR>" + ex.getMessage());
         }
     }
 
-    public void LargaOGarfo() throws InterruptedException {
-        App.mutex.acquire();
+    
+    public void LargaOGarfo ()
+    {
+        
+        Mesa.mutex.decrementar();
+
+        
         Pensando();
 
-        //Quando o fil�sofo larga os garfos, os outros fil�sofos, tanto o da direita, quanto o da esquerda, tem a possibilidade de pegarem os garfos.
-        App.filosofos[FilosofoEsquerda()].TentarPegarGarfos();
-        App.filosofos[FilosofoDireita()].TentarPegarGarfos();
-        App.mutex.release();
-    }
-
-    public synchronized void PegarOGarfo() throws InterruptedException {
-        App.mutex.acquire();
-        Fome();
-
-        //Se semaforo(1), ent�o o fil�sofo consegue pegar o garfo
-        TentarPegarGarfos();
-        App.mutex.release();
-
-        //Caso a condi��o seja falsa, ent�o o fil�sofo n�o conseguir� pegar o garfo e ter� que aguardar at� chegar a sua vez novamente
-        App.semaforos[this.idSituacao].acquire();
-    }
-
-    public synchronized void TentarPegarGarfos() {
         
-        //caso o fil�sofo atual estiver com fome, e seus vizinhos n�o estiverem comendo, ent�o � chamado o m�todo comendo para o fil�sofo atual.
-        if(App.situacao[this.idSituacao] == 1 
-           && App.situacao[FilosofoEsquerda()] !=2 
-           && App.situacao[FilosofoDireita()] !=2){
-        	
+        Mesa.filosofo[FilosofoEsquerda()].TentarPegarGarfos();
+        Mesa.filosofo[FilosofoDireita()].TentarPegarGarfos();
+
+       
+        Mesa.mutex.incrementar();
+    }
+
+    public void PegarOGarfo ()
+    {
+       
+        Mesa.mutex.decrementar();
+
+        ComFome();
+
+        
+        TentarPegarGarfos();
+
+        
+        Mesa.mutex.incrementar();
+        
+        Mesa.semaforos[this.ID].decrementar();
+    }
+
+    
+    public void TentarPegarGarfos()
+    {
+
+        
+        if (Mesa.situacao[this.ID] == 1 &&
+            Mesa.situacao[FilosofoEsquerda()] != 2 && 
+            Mesa.situacao[FilosofoDireita()] != 2)
+        {
+            
             Comendo();
             
-            App.semaforos[this.idSituacao].release();
-        } else {
-            System.out.println(getNome() + " n�o conseguiu comer desta vez!");
+            Mesa.semaforos[this.ID].incrementar();
         }
+
     }
 
+    
     @Override
-    public void run() {
-        try {
+    public void run ()
+    {
+
+        try
+        {
+          
             Pensando();
-            System.out.println(" ");
-            do {
+
+           do
+            {
                 PegarOGarfo();
                 Thread.sleep(1000L);
                 LargaOGarfo();
-            } while (true);
-        } catch (InterruptedException ex) {
-            System.out.println("ERRO" + ex.getMessage());
+            }
+            while (true);
+        }
+        catch (InterruptedException ex)
+        {
+            
+            System.out.println("ERROR>" + ex.getMessage());
+           
             return;
         }
+
     }
 
-    public int FilosofoDireita() {
-        return (this.idSituacao + 1) % 5;
+    
+    public int FilosofoDireita ()
+    {
+       
+        return (this.ID + 1) % 5;
     }
 
-    public int FilosofoEsquerda() {
-        //A esquerda do fil�sofo 0, estar� o fil�sofo 4
-        if(this.idSituacao == 0) {
+    
+    public int FilosofoEsquerda ()
+    {
+        if (this.ID == 0)
+        {
+            
             return 4;
-        } else {
-            return (this.idSituacao - 1) % 5;
+        }
+        else
+        {
+            
+            return (this.ID - 1) % 5;
         }
     }
 

@@ -1,0 +1,23 @@
+package jantar;
+
+public class Filosofo extends Thread {
+	
+	private int id;
+	
+	final int PENSANDO = 0;
+	final int COMFOME = 1;
+	final int COMENDO = 2;
+	
+	public Filosofo (String nome, int id) {
+		super(nome);
+		this.id = id;
+	}
+	
+	public void ComFome() {
+		
+		Mesa.situacao[this.id] = 1;
+		System.out.println("O Filosofo" + getName() + " esta com fome.");
+	}
+	
+	
+}
