@@ -7,31 +7,33 @@ import java.util.concurrent.*;
 public class Matriz {
     //region Attributes
     public int x = 0;
-    public int y = 0;
+    public int y = -1;
     public int size = 0;
     public ArrayList<ArrayList<Integer>> matriz = new ArrayList<>();
     public ArrayList<ArrayList<Integer>> matriz_aux = new ArrayList<>();
     public CyclicBarrier um_para_dois;
+    public CyclicBarrier dois_para_um;
     public Semaphore mutex = new Semaphore(1);
     //endregion
 
     //region Constructor
     public Matriz(int n){
-        this.size=n;
+        this.size = n;
         Random rnd = new Random();
-        for (int i = 0; i < this.size; i++) {
+        for (int i = 0; i < n; i++) {
             ArrayList<Integer> vetor = new ArrayList<>();
             ArrayList<Integer> vetor_aux = new ArrayList<>();
-            for (int j = 0; j < this.size; j++) {
-                vetor.add(rnd.nextInt(20));
+            for (int j = 0; j < n; j++) {
+                vetor.add(rnd.nextInt(99));
                 vetor_aux.add(0);
             }
             matriz.add(vetor);
             matriz_aux.add(vetor_aux);
         }
-        um_para_dois = new CyclicBarrier(size*size, parte2);
-    }
+        um_para_dois = new CyclicBarrier(n*n, parte2);
+        dois_para_um = new CyclicBarrier(1, parte1);
 
+    }
     //endregion
 
     //region Methods
@@ -112,40 +114,14 @@ public class Matriz {
     }
 
     Runnable parte2 = () -> {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                matriz.get(i).set(j,matriz_aux.get(i).get(j));
-            }
-        }
+        matriz = matriz_aux;
         System.out.println("-------");
-        System.out.println("Resultado soma");
+        System.out.println("Resultado média");
         matrizToString(matriz);
         System.out.println("-------");
-        try {
-            wait(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //run();
+
+
     };
-
-//    private void reset_matriz() {
-//        this.x=0;
-//        this.y=0;
-//        if (!executor.isShutdown()){
-//            executor.shutdown();
-//        }
-//        for (int i = 0; i < this.size; i++) {
-//            ArrayList<Integer> vetor = new ArrayList<>();
-//            ArrayList<Integer> vetor_aux = new ArrayList<>();
-//            for (int j = 0; j < this.size; j++) {
-//                vetor_aux.add(0);
-//            }
-//            matriz_aux.set(i,vetor_aux);
-//        }
-//        executor = Executors.newFixedThreadPool(size*size);
-//    }
-
 
 
     private static void await(CyclicBarrier cyclicBarrier) {
@@ -157,29 +133,18 @@ public class Matriz {
         }
     }
 
-    public void run() {
-        ExecutorService  executor = Executors.newFixedThreadPool(size*size);
-        for (int i = 0; i < (size * size); i++) {
-            executor.submit(parte1);
-        }
-        executor.shutdown();
-
-        /*
-        this.x=0;
-        this.y=0;
-        if (!executor.isShutdown()){
-            executor.shutdown();
-        }
-        for (int i = 0; i < this.size; i++) {
-            ArrayList<Integer> vetor = new ArrayList<>();
-            ArrayList<Integer> vetor_aux = new ArrayList<>();
-            for (int j = 0; j < this.size; j++) {
-                vetor_aux.add(0);
+    public void run() throws InterruptedException {
+        ExecutorService executor;
+        while(true) {
+            executor = Executors.newFixedThreadPool(size*size);
+            for (int i = 0; i < (size * size) + 10; i++) {
+                executor.submit(parte1);
             }
-            matriz_aux.set(i,vetor_aux);
+            executor.shutdown();
+            Thread.sleep(1000L);
         }
-        */
     }
+
 
     //endregion
 }
