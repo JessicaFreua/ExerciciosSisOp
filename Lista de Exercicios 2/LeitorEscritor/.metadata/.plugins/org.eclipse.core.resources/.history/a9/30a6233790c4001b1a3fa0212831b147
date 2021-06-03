@@ -1,0 +1,20 @@
+package LivrariaLeitoresEscritores;
+
+public class Escritor {
+	
+	private ControladorLivraria controlador;
+	private int id;
+	
+	public Escritor(ControladorLivraria controlador, int id) {
+		this.controlador = controlador;
+		this.id = id;
+	}
+	
+	public void run() {
+		while(true) {
+			controlador.entraEscritor(id);
+			controlador.saiEscritor(id);
+		}
+	}
+
+}

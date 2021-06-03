@@ -1,0 +1,25 @@
+package LivrariaLeitoresEscritores;
+
+public class Escritor extends Thread {
+	
+	private ControladorLivraria controlador;
+	private int id;
+	
+	public Escritor(ControladorLivraria controlador, int id) {
+		this.controlador = controlador;
+		this.id = id;
+	}
+	
+	public void run(){
+		while(true) {
+			try {
+				controlador.entraEscritor(id);
+				controlador.saiEscritor(id);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+
+}
